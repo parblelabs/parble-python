@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "parble"
+description = "Parble Python SDK"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+keywords = []
+authors = [
+    { name = "Timothé Perez", email = "timothe@parble.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "click>=8.0",
+    "requests>=2.28",
+    "pydantic>=1.10"
+]
+optional-dependencies.docs = [
+    "sphinx>=5.3",
+    "sphinx-click>=4.3",
+    "towncrier>=22.8.0",
+    "pydata-sphinx-theme>=0.12.0"
+]
+optional-dependencies.tests = [
+    "pytest>=7.2",
+    "pytest-cov>=4.0",
+    "pre-commit>=2.20",
+    "requests-mock>=1.10"
+]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://github.com/parblelabs/parble-python#readme"
+Issues = "https://github.com/parblelabs/parble-python/issues"
+Source = "https://github.com/parblelabs/parble-python"
+
+[project.scripts]
+parble = "parble.commands:parble"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "parble/_version.py"
+
+[tool.hatch.envs.test.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=parble --cov=tests {args}"
+no-cov = "pytest"
+
+
+[tool.hatch.envs.test]
+features = [
+    "tests"
+]
+
+
+[[tool.hatch.envs.test.matrix]]
+python = ["37", "38", "39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+    "parble/_version.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 120
+
+[tool.towncrier]
+directory = "changes"
+filename = "CHANGELOG.rst"
+package = "parble"
