@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: "pyproject.toml"
       - name: Install Hatch
         run: |
-          pip --upgrade pip
+          pip install --upgrade pip
           pip install hatch
       - name: Pytest
         run: hatch run +py=${{ matrix.python-version }} test:cov
