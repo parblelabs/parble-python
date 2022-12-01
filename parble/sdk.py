@@ -38,7 +38,7 @@ class ParbleSDK:
             file_type = "application/octet-stream"
         with open(path.absolute(), "rb") as f:
             res = self.client.files.post(f, file_name, content_type=file_type)
-        return self.create_file(res)
+        return self.create_file(**res)
 
     def upload_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
         """
@@ -57,7 +57,7 @@ class ParbleSDK:
             Processed File data
         """
         res = self.client.files.post(file, file_name, content_type=file_type)
-        return self.create_file(res)
+        return self.create_file(**res)
 
     def get_file(self, file_id: str) -> File:
         """
@@ -70,7 +70,7 @@ class ParbleSDK:
             Matching File
         """
         res = self.client.files.get(file_id)
-        return self.create_file(res)
+        return self.create_file(**res)
 
     def get_file_pdf(self, file_id: str) -> t.BinaryIO:
         """
@@ -85,7 +85,7 @@ class ParbleSDK:
         res = self.client.files.get(file_id, content_type="application/pdf")
         return BytesIO(res)
 
-    def create_file(self, attrs: t.Dict[str, t.Any]) -> File:
+    def create_file(self, **attrs: t.Any) -> File:
         """
         Create a File object from a dict of attributes
 

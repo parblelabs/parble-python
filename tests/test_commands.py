@@ -1,3 +1,4 @@
+import json
 from unittest.mock import ANY, patch
 
 import pytest
@@ -17,13 +18,12 @@ def config_envvars(monkeypatch, url, api_key):
     monkeypatch.setenv("PARBLE_API_KEY", api_key)
 
 
-def test_upload(runner, tmp_path, config_envvars, text):
+def test_upload(runner, tmp_path, config_envvars, text, dummy_file_attributes):
     name = "test_upload.txt"
-    pk = "636baf52b9753d4ce1e210d0"
     path = tmp_path / name
 
     def upload_path(self, _):
-        return self.create_file(dict(id=pk))
+        return self.create_file(**dummy_file_attributes)
 
     with open(path, "w") as f:
         f.write(text)
@@ -32,7 +32,15 @@ def test_upload(runner, tmp_path, config_envvars, text):
         res = runner.invoke(upload, [str(path)])
         assert res.exit_code == 0, res.output
         m.assert_called_once_with(ANY, path)
-        assert res.output == '{"id": "%s"}\n' % pk
+        data = json.loads(res.output)
+        assert data["id"] == dummy_file_attributes["id"]
+        assert data["filename"] == dummy_file_attributes["filename"]
+        assert data["automated"] == dummy_file_attributes["automated"]
+        assert data["number_of_pages"] == dummy_file_attributes["number_of_pages"]
+        assert "timings" in data
+        assert "documents" in data
+        docs = data["documents"]
+        assert len(docs) == 1
 
 
 def test_upload_file_does_not_exist(runner, tmp_path, config_envvars, text):
