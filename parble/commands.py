@@ -1,22 +1,29 @@
-from json import dump
 from pathlib import Path
 from typing import Optional
 
 import click
 
 from ._version import __version__
+from .models import File
 from .sdk import ParbleSDK
 from .utils import Spinner
 
 
-def _output(data, path: Optional[Path]):
+def _output(file: File, output_format: str, path: Optional[Path] = None):
+
+    if output_format == "pdf":
+        data = file.pdf.read()
+    else:
+        data = file.json().encode()
+
     if not path:
         click.echo(data)
         return
 
-    with open(path, "w") as f:
-        dump(data, f)
-        click.echo(f"Result saved in {path}")
+    with open(path, "wb") as f:
+        click.echo(data, f)
+
+    click.echo(f"Result saved in {path}")
 
 
 @click.group(
@@ -41,12 +48,20 @@ def file():
 @file.command()
 @click.argument("file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option(
+    "-f",
+    "--format",
+    "output_format",
+    type=click.Choice(["pdf", "json"]),
+    default="json",
+    help="Output format",
+)
+@click.option(
     "-o",
     "--output",
     type=click.Path(dir_okay=False, path_type=Path),
-    help="Output path for the processing result",
+    help="Save the output to this file",
 )
-def upload(file: Path, output: Path):
+def upload(file: Path, output: Path, output_format: str):
     """
     Upload and process FILE.
 
@@ -58,24 +73,32 @@ def upload(file: Path, output: Path):
     """
     sdk = ParbleSDK()
     with Spinner():
-        res = sdk.upload_path(file)
-    data = res.json()
-    _output(data, output)
+        file = sdk.upload_path(file)
+
+    _output(file, output_format, output)
 
 
 @file.command()
 @click.argument("file-id", type=str)
 @click.option(
+    "-f",
+    "--format",
+    "output_format",
+    type=click.Choice(["pdf", "json"]),
+    default="json",
+    help="Output format",
+)
+@click.option(
     "-o",
     "--output",
     type=click.Path(dir_okay=False, path_type=Path),
-    help="Save the json to this file",
+    help="Save the output to this file",
 )
-def get(file_id, output):
+def get(file_id, output, output_format):
     """
     Get the processing result of the given FILE_ID
     """
     sdk = ParbleSDK()
-    res = sdk.get_file(file_id)
-    data = res.json()
-    _output(data, output)
+    file = sdk.get_file(file_id)
+
+    _output(file, output_format, output)
