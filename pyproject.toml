@@ -60,12 +60,20 @@ version-file = "parble/_version.py"
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=parble --cov=tests {args}"
 no-cov = "pytest"
 
+[tool.hatch.envs.docs.scripts]
+build-html = "sphinx-build -M html docs docs/_build"
+clean = "sphinx-build -M clean docs docs/_build"
+
 
 [tool.hatch.envs.test]
 features = [
     "tests"
 ]
 
+[tool.hatch.envs.docs]
+features = [
+    "docs"
+]
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
