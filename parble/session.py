@@ -60,4 +60,4 @@ class BaseSession(Session):
     def parse_error(self, err: HTTPError):
         code = err.response.status_code
         exc = handlers.get(code, APICallError)
-        raise exc from err
+        raise exc(*err.args) from err

@@ -12,8 +12,7 @@ class ParbleAPIClient:
     """
 
     def __init__(self, url=None, api_key=None):
-        kwargs = {"url": url, "api_key": api_key}
-        self.settings = Settings(**{k: v for k, v in kwargs.items() if v is not None})
+        self.settings = Settings(url=url, api_key=api_key)
         self._client = BaseSession(self.settings)
         self.files = FilesResource(self)
 
