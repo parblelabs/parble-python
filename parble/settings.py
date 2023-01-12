@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import AnyHttpUrl, BaseSettings, SecretStr, ValidationError
+from pydantic import AnyHttpUrl, BaseSettings, SecretStr, ValidationError, validator
 
 from parble.exceptions import ConfigurationError
 
@@ -25,6 +25,12 @@ class Settings(BaseSettings):
         except ValidationError as e:
             msg = f"missing or incorrect settings value for {', '.join([' '.join(x['loc']) for x in e.errors()])}"
             raise ConfigurationError(msg) from e
+
+    @validator("url")
+    def url_ends_with_slash(cls, v):
+        if v[-1] != "/":
+            v += "/"
+        return v
 
 
 __all__ = ("Settings",)
