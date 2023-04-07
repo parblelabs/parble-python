@@ -13,7 +13,7 @@ class Timings(BaseModel):
     """
 
     upload: datetime
-    done: datetime
+    done: Optional[datetime]
 
 
 class Classification(BaseModel):

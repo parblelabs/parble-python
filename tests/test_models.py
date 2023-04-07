@@ -3,6 +3,13 @@ from unittest.mock import patch
 from parble.models import File
 
 
+def test_file_create_not_done(sdk, dummy_file_attributes):
+    dummy_file_attributes["timings"]["done"] = None
+    file = File(sdk=sdk, **dummy_file_attributes)
+    assert file.id == dummy_file_attributes["id"]
+    assert file.timings.done is None
+
+
 def test_file_create(sdk, dummy_file_attributes):
     file = File(sdk=sdk, **dummy_file_attributes)
     assert file.id == dummy_file_attributes["id"]
