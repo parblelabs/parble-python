@@ -73,7 +73,7 @@ class File(BaseModel):
         Explicitly calling del on this property will clear the cache
         """
         if self._pdf is None:
-            self._pdf = self._sdk.get_file_pdf(self.id)
+            self._pdf = self._sdk.files.get_pdf(self.id)
         return self._pdf
 
     @pdf.deleter
