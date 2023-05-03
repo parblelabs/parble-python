@@ -17,9 +17,12 @@ class ParbleSDK:
 
     def __init__(self, url=None, api_key=None):
         self.client = ParbleAPIClient(url=url, api_key=api_key)
-        self.files = self.files()
+        self.files = self.Files(self.client)
 
-    class files:
+    class Files:
+        def __init__(self, client: ParbleAPIClient):
+            self.client = client
+
         def post(self, path: t.Union[str, Path]) -> File:
             """
             Upload and process the file at the given local path
@@ -38,8 +41,8 @@ class ParbleSDK:
             if not file_type:
                 file_type = "application/octet-stream"
             with open(path.absolute(), "rb") as f:
-                res = self.client.files.post(f, file_name, content_type=file_type)
-            return self.files.create(**res)
+                res = self.client.post(f, file_name, content_type=file_type)
+            return self.create(**res)
 
         def post_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
             """
@@ -57,8 +60,8 @@ class ParbleSDK:
             Returns:
                 Processed File data
             """
-            res = self.client.files.post(file, file_name, content_type=file_type)
-            return self.files.create(**res)
+            res = self.client.post(file, file_name, content_type=file_type)
+            return self.create(**res)
 
         def get(self, file_id: str) -> File:
             """
@@ -70,8 +73,8 @@ class ParbleSDK:
             Returns:
                 Matching File
             """
-            res = self.client.files.get(file_id)
-            return self.files.create(**res)
+            res = self.client.get(file_id)
+            return self.create(**res)
 
         def get_pdf(self, file_id: str) -> t.BinaryIO:
             """
@@ -83,7 +86,7 @@ class ParbleSDK:
             Returns:
                 File-like PDF content
             """
-            res = self.client.files.get(file_id, content_type="application/pdf")
+            res = self.client.get(file_id, content_type="application/pdf")
             return BytesIO(res)
 
         def create(self, **attrs: t.Any) -> File:
