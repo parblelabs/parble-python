@@ -41,11 +41,11 @@ def test_upload(runner, tmp_path, config_envvars, text, dummy_file_attributes):
     path = tmp_path / name
 
     def upload_path(self, _):
-        return self.create_file(**dummy_file_attributes)
+        return self.create(**dummy_file_attributes)
 
     with open(path, "w") as f:
         f.write(text)
-    with patch("parble.sdk.ParbleSDK.files.upload_path", autospec=True) as m:
+    with patch("parble.sdk.ParbleSDK.Files.post", autospec=True) as m:
         m.side_effect = upload_path
         res = runner.invoke(upload, [str(path)])
         assert res.exit_code == 0, res.output
@@ -77,7 +77,7 @@ def test_get_file(runner, config_envvars, dummy_file):
     def _get(_):
         return dummy_file
 
-    with patch("parble.sdk.ParbleSDK.get_file") as m:
+    with patch("parble.sdk.ParbleSDK.Files.get") as m:
         m.side_effect = _get
 
         res = runner.invoke(get, [dummy_file.id])
@@ -103,7 +103,7 @@ def test_get_file_pdf(runner, config_envvars, dummy_file):
     def _get(_):
         return dummy_file
 
-    with patch("parble.sdk.ParbleSDK.get_file") as m, patch("parble.models.File.pdf", new_callable=PropertyMock) as f:
+    with patch("parble.sdk.ParbleSDK.Files.get") as m, patch("parble.models.File.pdf", new_callable=PropertyMock) as f:
         m.side_effect = _get
         f.return_value = BytesIO(b)
         res = runner.invoke(get, [dummy_file.id, "--format", "pdf"])
@@ -116,7 +116,7 @@ def test_get_file_pdf(runner, config_envvars, dummy_file):
 
 
 def test_missing_envvars(runner):
-    with patch("parble.sdk.ParbleSDK.get_file") as m:
+    with patch("parble.sdk.ParbleSDK.Files.get") as m:
         res = runner.invoke(parble, ["file", "get", "foobar"])
         assert m.call_count == 0
     assert res.stderr

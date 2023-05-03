@@ -143,7 +143,7 @@ def upload(file: Path, output: Path, output_format: str):
     """
     sdk = ParbleSDK()
     with Spinner():
-        file = sdk.files.upload_path(file)
+        file = sdk.files.post(file)
 
     _output(file, output_format, output)
 
@@ -169,6 +169,6 @@ def get(file_id, output, output_format):
     Get the processing result of the given FILE_ID
     """
     sdk = ParbleSDK()
-    file = sdk.get_file(file_id)
+    file = sdk.files.get(file_id)
 
     _output(file, output_format, output)

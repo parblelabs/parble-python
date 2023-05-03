@@ -41,13 +41,13 @@ or rely on environments variables - it will be automatically read:
 File Upload
 ^^^^^^^^^^^
 
-To upload a file, you just need to pass a file-like object to :py:func:`parble.ParbleSDK.upload_file`.
+To upload a file, you just need to pass a file-like object to :py:func:`parble.ParbleSDK.files.post_file`.
 
 You need to explicitly provide the filename, and optionally the content type of your file - this gives an hint about your file type; if not set it will be inferred during processing.
 
 
 
-You can also use :py:func:`parble.ParbleSDK.files.upload_path` to upload a file located at the provided path.
+You can also use :py:func:`parble.ParbleSDK.files.post` to upload a file located at the provided path.
 
 
 .. code-block:: python
@@ -56,10 +56,10 @@ You can also use :py:func:`parble.ParbleSDK.files.upload_path` to upload a file 
 
     sdk = ParbleSDK()  # Loading settings from envvars
 
-    file = sdk.files.upload_path("files/demo.pdf")
+    file = sdk.files.post("files/demo.pdf")
 
     with open("files/demo.pdf", "rb") as f:
-        file = sdk.upload_file(f, "demo.pdf", "application/pdf")
+        file = sdk.files.post_file(f, "demo.pdf", "application/pdf")
 
     print(file.id)
 
