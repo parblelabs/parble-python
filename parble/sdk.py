@@ -18,27 +18,32 @@ class ParbleSDK:
     def __init__(self, url=None, api_key=None):
 
         self.client = ParbleAPIClient(url=url, api_key=api_key)
+        self.files = Files(self.client)
 
-    def upload_path(self, path: t.Union[str, Path]) -> File:
-        """
-        Upload and process the file at the given local path
+    class Files:
+        def __init__(self, client: ParbleAPIClient):
+            self.client = client
 
-        Args:
-            path: local path of the file to upload
+        def upload_path(self, path: t.Union[str, Path]) -> File:
+            """
+            Upload and process the file at the given local path
 
-        Returns:
-            Processed File response
-        """
-        if not isinstance(path, Path):
-            path = Path(path)
+            Args:
+                path: local path of the file to upload
 
-        file_name = path.name
-        file_type, encoding = guess_type(path)
-        if not file_type:
-            file_type = "application/octet-stream"
-        with open(path.absolute(), "rb") as f:
-            res = self.client.files.post(f, file_name, content_type=file_type)
-        return self.create_file(**res)
+            Returns:
+                Processed File response
+            """
+            if not isinstance(path, Path):
+                path = Path(path)
+
+            file_name = path.name
+            file_type, encoding = guess_type(path)
+            if not file_type:
+                file_type = "application/octet-stream"
+            with open(path.absolute(), "rb") as f:
+                res = self.client.files.post(f, file_name, content_type=file_type)
+            return self.create_file(**res)
 
     def upload_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
         """

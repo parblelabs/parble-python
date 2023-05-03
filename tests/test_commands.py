@@ -45,7 +45,7 @@ def test_upload(runner, tmp_path, config_envvars, text, dummy_file_attributes):
 
     with open(path, "w") as f:
         f.write(text)
-    with patch("parble.sdk.ParbleSDK.upload_path", autospec=True) as m:
+    with patch("parble.sdk.ParbleSDK.files.upload_path", autospec=True) as m:
         m.side_effect = upload_path
         res = runner.invoke(upload, [str(path)])
         assert res.exit_code == 0, res.output

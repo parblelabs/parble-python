@@ -19,7 +19,7 @@ def test_upload_path(sdk, tmp_path, text, dummy_file_attributes):
 
     with patch("parble.resources.files.FilesResource.post") as m:
         m.return_value = dummy_file_attributes
-        rv = sdk.upload_path(str(path))
+        rv = sdk.files.upload_path(str(path))
         assert isinstance(rv, File)
         assert rv.id == dummy_file_attributes["id"]
         m.assert_called_once_with(ANY, name, content_type="text/plain")

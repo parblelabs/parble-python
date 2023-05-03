@@ -47,7 +47,7 @@ You need to explicitly provide the filename, and optionally the content type of 
 
 
 
-You can also use :py:func:`parble.ParbleSDK.upload_path` to upload a file located at the provided path.
+You can also use :py:func:`parble.ParbleSDK.files.upload_path` to upload a file located at the provided path.
 
 
 .. code-block:: python
@@ -56,7 +56,7 @@ You can also use :py:func:`parble.ParbleSDK.upload_path` to upload a file locate
 
     sdk = ParbleSDK()  # Loading settings from envvars
 
-    file = sdk.upload_path("files/demo.pdf")
+    file = sdk.files.upload_path("files/demo.pdf")
 
     with open("files/demo.pdf", "rb") as f:
         file = sdk.upload_file(f, "demo.pdf", "application/pdf")
