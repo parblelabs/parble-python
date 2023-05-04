@@ -56,7 +56,7 @@ def dummy_file_attributes():
                     end_page=1,
                 ),
                 header_fields={},
-                line_items={},
+                tables={},
             )
         ],
     )
