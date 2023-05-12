@@ -18,85 +18,90 @@ class ParbleSDK:
     def __init__(self, url=None, api_key=None):
 
         self.client = ParbleAPIClient(url=url, api_key=api_key)
+        self.files = self.Files(self)
 
-    def upload_path(self, path: t.Union[str, Path]) -> File:
-        """
-        Upload and process the file at the given local path
+    class Files:
+        def __init__(self, sdk: 'ParbleSDK'):
+            self._sdk = sdk
 
-        Args:
-            path: local path of the file to upload
+        def post(self, path: t.Union[str, Path]) -> File:
+            """
+            Upload and process the file at the given local path
 
-        Returns:
-            Processed File response
-        """
-        if not isinstance(path, Path):
-            path = Path(path)
+            Args:
+                path: local path of the file to upload
 
-        file_name = path.name
-        file_type, encoding = guess_type(path)
-        if not file_type:
-            file_type = "application/octet-stream"
-        with open(path.absolute(), "rb") as f:
-            res = self.client.files.post(f, file_name, content_type=file_type)
-        return self.create_file(**res)
+            Returns:
+                Processed File response
+            """
+            if not isinstance(path, Path):
+                path = Path(path)
 
-    def upload_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
-        """
-        Upload and process the given file-like
+            file_name = path.name
+            file_type, encoding = guess_type(path)
+            if not file_type:
+                file_type = "application/octet-stream"
+            with open(path.absolute(), "rb") as f:
+                res = self._sdk.client.files.post(f, file_name, content_type=file_type)
+            return self.create(**res)
 
-        This function requires you to specify the filename which will be sent. You can also specify
-        the file type as a hint to help inferring the proper payload content type; else this will be treated
-        as an octet stream.
+        def post_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
+            """
+            Upload and process the given file-like
 
-        Args:
-            file: File-like object
-            file_name: Filename to be used
-            file_type: Content Type of the file
+            This function requires you to specify the filename which will be sent. You can also specify
+            the file type as a hint to help inferring the proper payload content type; else this will be treated
+            as an octet stream.
 
-        Returns:
-            Processed File data
-        """
-        res = self.client.files.post(file, file_name, content_type=file_type)
-        return self.create_file(**res)
+            Args:
+                file: File-like object
+                file_name: Filename to be used
+                file_type: Content Type of the file
 
-    def get_file(self, file_id: str) -> File:
-        """
-        Retrieve the given File payload
+            Returns:
+                Processed File data
+            """
+            res = self._sdk.client.files.post(file, file_name, content_type=file_type)
+            return self.create(**res)
 
-        Args:
-            file_id: File ID to get
+        def get(self, file_id: str) -> File:
+            """
+            Retrieve the given File payload
 
-        Returns:
-            Matching File
-        """
-        res = self.client.files.get(file_id)
-        return self.create_file(**res)
+            Args:
+                file_id: File ID to get
 
-    def get_file_pdf(self, file_id: str) -> t.BinaryIO:
-        """
-        Retrieve the given File PDF content
+            Returns:
+                Matching File
+            """
+            res = self._sdk.client.files.get(file_id)
+            return self.create(**res)
 
-        Args:
-            file_id: File ID to get
+        def get_pdf(self, file_id: str) -> t.BinaryIO:
+            """
+            Retrieve the given File PDF content
 
-        Returns:
-            File-like PDF content
-        """
-        res = self.client.files.get(file_id, content_type="application/pdf")
-        return BytesIO(res)
+            Args:
+                file_id: File ID to get
 
-    def create_file(self, **attrs: t.Any) -> File:
-        """
-        Create a File object from a dict of attributes
+            Returns:
+                File-like PDF content
+            """
+            res = self._sdk.client.files.get(file_id, content_type="application/pdf")
+            return BytesIO(res)
 
-        On top of the attributes from the API, Files require to be bound to an active SDK instance,
-        which this helper function makes sure.
+        def create(self, **attrs: t.Any) -> File:
+            """
+            Create a File object from a dict of attributes
 
-        Args:
-            attrs: Attributes payload from the API Call
+            On top of the attributes from the API, Files require to be bound to an active SDK instance,
+            which this helper function makes sure.
 
-        Returns:
-            parsed File object
-        """
-        attrs["sdk"] = self
-        return File.parse_obj(attrs)
+            Args:
+                attrs: Attributes payload from the API Call
+
+            Returns:
+                parsed File object
+            """
+            attrs["sdk"] = self._sdk
+            return File.parse_obj(attrs)
