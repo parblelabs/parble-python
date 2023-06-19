@@ -32,3 +32,20 @@ def test_file_iter(dummy_file):
 
 def test_file_get_item(dummy_file):
     assert dummy_file[0] == dummy_file.documents[0]
+
+
+def test_to_json(dummy_file):
+    json_data = dummy_file.to_json()
+
+    assert json_data == '{"id": "631bafa2b9753d4ce1e210d0", "timings": {"upload": "2022-11-19 09:42:51", "done": "2022-11-19 09:42:59"}, "filename": "Example.pdf", "automated": false, "number_of_pages": 1, "documents": [{"automated": false, "classification": {"automated": true, "document_type": "invoice", "confidence": 94.0, "start_page": 0, "end_page": 1}, "header_fields": {}, "tables": {}}]}'
+
+def test_from_json(dummy_file):
+    json_data = '{"id": "631bafa2b9753d4ce1e210d0", "timings": {"upload": "2022-11-19 09:42:51", "done": "2022-11-19 09:42:59"}, "filename": "Example.pdf", "automated": false, "number_of_pages": 1, "documents": [{"automated": false, "classification": {"automated": true, "document_type": "invoice", "confidence": 94.0, "start_page": 0, "end_page": 1}, "header_fields": {}, "tables": {}}]}'
+    file = File.from_json(json_data)
+
+    assert file == dummy_file
+
+def test_json_from_file(dummy_file, dummy_file_attributes):
+    import json
+    a = json.dumps(dummy_file_attributes)
+    assert a == dummy_file.to_json()
