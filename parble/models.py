@@ -28,15 +28,29 @@ class Classification(BaseModel):
     end_page: int
 
 
+class Field(BaseModel):
+    """
+    A single field that's contains inside a document
+    """
+
+    page: int
+    coordinates: List[int]
+    text: str
+    value: str
+    confidence: int
+    automated: bool
+
+
 class Document(BaseModel):
     """
     A single classified and predicted document
     """
 
+    filename: Optional[str]
     automated: bool
     classification: Classification
-    header_fields: Dict[str, Any] = {}
-    tables: Dict[str, Any] = {}
+    header_fields: Dict[str, Field] = {}
+    tables: Dict[str, Dict[str, Field]] = {}
 
     @property
     def type(self) -> str:
