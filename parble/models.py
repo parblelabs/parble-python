@@ -39,7 +39,7 @@ class Classification(BaseModel):
 
 class Field(BaseModel):
     """
-    A single field that's contains inside a document
+    A single field that's contained inside a document
     """
 
     page: int
