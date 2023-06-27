@@ -1,7 +1,10 @@
 from datetime import datetime
+import json
 from typing import TYPE_CHECKING, Any, BinaryIO, Dict, List, Optional
 
 from pydantic import BaseModel, PrivateAttr, confloat
+
+import json
 
 if TYPE_CHECKING:
     from parble.sdk import ParbleSDK
@@ -14,6 +17,12 @@ class Timings(BaseModel):
 
     upload: datetime
     done: Optional[datetime]
+
+    def to_json_struct(self):
+        return {
+            "upload": self.upload.strftime('%Y-%m-%d %H:%M:%S'),
+            "done": self.done.strftime('%Y-%m-%d %H:%M:%S')
+        }
 
 
 class Classification(BaseModel):
@@ -28,6 +37,19 @@ class Classification(BaseModel):
     end_page: int
 
 
+class Field(BaseModel):
+    """
+    A single field that's contained inside a document
+    """
+
+    page: int
+    coordinates: List[int]
+    text: str
+    value: str
+    confidence: int
+    automated: bool
+
+
 class Document(BaseModel):
     """
     A single classified and predicted document
@@ -35,8 +57,8 @@ class Document(BaseModel):
 
     automated: bool
     classification: Classification
-    header_fields: Dict[str, Any] = {}
-    tables: Dict[str, Any] = {}
+    header_fields: Dict[str, Field] = {}
+    tables: Dict[str, Dict[str, Field]] = {}
 
     @property
     def type(self) -> str:
@@ -98,3 +120,24 @@ class File(BaseModel):
         Accessing indexed item returns documents of the file
         """
         return self.documents[item]
+
+    @staticmethod
+    def from_json(json_data: str):
+        """
+        decoding a json string to a File object
+        """
+        attrs = json.loads(json_data)
+        attrs["sdk"] = 'ParbleSDK'
+        return File.parse_obj(attrs)
+
+    def to_json(self):
+        """
+        Convert a File object to a json string
+        """
+        return json.dumps(self, default=self.__convert_to_json_struct)
+
+    @staticmethod
+    def __convert_to_json_struct(o):
+        if hasattr(o, 'to_json_struct') and callable(o.to_json_struct):
+            return o.to_json_struct()
+        return o.__dict__
