@@ -21,6 +21,9 @@ class ParbleSDK:
         self.files = self.Files(self)
 
     class Files:
+        """
+        Files helper to upload, get processed elements, etc
+        """
         def __init__(self, sdk: 'ParbleSDK'):
             self._sdk = sdk
 

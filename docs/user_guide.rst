@@ -1,6 +1,10 @@
 User Guide
 ==========
 
+Official python SDK for `Parble <https://parble.com/home>`_ intelligent document processing API.
+
+To access the API you will need a Parble account. Sign up for free at `signup <https://parble.com/signup>`_.
+
 Installation
 ------------
 
@@ -27,15 +31,14 @@ You can either explicitly pass it to the SDK :
 
     from parble import ParbleSDK
 
-    sdk = ParbleSDK(url="https://demo.parble.com/v1/", api_key="xxx")
-
+    sdk = ParbleSDK(url="https://api.parble.com/v1/<tenant id>", api_key="xxx")
 
 
 or rely on environments variables - it will be automatically read:
 
 .. code-block:: console
 
-    export PARBLE_URL="https://demo.parble.com/v1/"
+    export PARBLE_URL="https://api.parble.com/v1/<tenant id>"
     export PARBLE_API_KEY="xxx"
 
 File Upload
@@ -74,7 +77,7 @@ You need to define the URL and the API-Key as environments variables beforehand:
 
 .. code-block:: console
 
-    export PARBLE_URL="https://demo.parble.com/v1/"
+    export PARBLE_URL="https://api.parble.com/v1/<tenant id>"
     export PARBLE_API_KEY="xxx"
     parble file upload Invoice.pdf
 

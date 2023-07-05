@@ -167,6 +167,9 @@ def upload(file: Path, output: Path, output_format: str):
 def get(file_id, output, output_format):
     """
     Get the processing result of the given FILE_ID
+
+    This command get a previously processed file and returns it's attributes.
+
     """
     sdk = ParbleSDK()
     file = sdk.files.get(file_id)
