@@ -4,6 +4,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 import os
 import sys
+import datetime
 
 from parble import __version__
 
@@ -13,9 +14,9 @@ sys.path.insert(0, os.path.abspath(".."))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Parble-python"
-copyright = "2022, Smart and Easy NV"
+copyright = f"2022-{datetime.date.today().year}, Smart and Easy NV"
 author = "ParbleLabs"
-release = __version__
+release = "0.3.1.dev5+g892be22"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -39,7 +40,8 @@ html_theme_options = {
     "logo": {"text": html_title, "alt_text": "Parble Logo"},
     "github_url": "https://github.com/parblelabs/parble-python",
     "twitter_url": "https://twitter.com/parblelabs",
-    "footer_items": ["copyright", "sphinx-version"],
+    "footer_start": "copyright",
+    "footer_end": "sphinx-version",
 }
 html_css_files = [
     "custom.css",
