@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "Parble-python"
 copyright = f"2022-{datetime.date.today().year}, Smart and Easy NV"
 author = "ParbleLabs"
-release = "0.3.1.dev5+g892be22"
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
