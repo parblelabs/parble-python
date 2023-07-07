@@ -34,6 +34,8 @@ class BaseSession(Session):
 
         Args:
             url: resource part to add to the base url
+            **kwargs:
+                timeout: overwrite the default timeout
 
         Returns:
             Full concatenated URL

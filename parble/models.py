@@ -58,7 +58,7 @@ class Document(BaseModel):
     automated: bool
     classification: Classification
     header_fields: Dict[str, Field] = {}
-    tables: Dict[str, Dict[str, Field]] = {}
+    tables: Dict[str, Any] = {}
 
     @property
     def type(self) -> str:
