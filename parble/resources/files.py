@@ -28,7 +28,7 @@ class FilesResource(BaseResource):
         file_content: t.BinaryIO,
         file_name: str,
         inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None,
-        content_type="application/octet-stream",
+        content_type: str = "application/octet-stream",
     ) -> t.Dict[str, t.Any]:
 
         files = {
