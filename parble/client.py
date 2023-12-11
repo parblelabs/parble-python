@@ -6,9 +6,7 @@ from parble.settings import Settings
 class ParbleAPIClient:
     """
     Low level REST API Client
-
     This thin layer exposes the API resources
-
     """
 
     def __init__(self, url=None, api_key=None):

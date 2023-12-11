@@ -1,5 +1,7 @@
 import typing as t
 
+from pydantic import constr
+
 from .base import BaseResource
 
 
@@ -25,11 +27,19 @@ class FilesResource(BaseResource):
         self,
         file_content: t.BinaryIO,
         file_name: str,
+        inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None,
         content_type="application/octet-stream",
     ) -> t.Dict[str, t.Any]:
+
+        files = {
+            "file": (file_name, file_content, content_type)
+        }
+        if inbox_id:
+            files["inbox_id"] = inbox_id
+
         res = self._client.post(
             self.__uri__,
-            files={"file": (file_name, file_content, content_type)},
+            files=files,
             timeout=300,
         )
         if res.ok:

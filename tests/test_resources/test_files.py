@@ -49,6 +49,16 @@ def test_post(files_resource, requests_mock, url, text):
 
     assert rv == dict(id=pk)
 
+def test_post_custom_inbox(files_resource, requests_mock, url, text):
+    pk = "636baf52b9753d4ce1e210d0"
+    buf = BytesIO(text.encode())
+
+    requests_mock.post(f"{url}files", json=dict(id=pk))
+
+    rv = files_resource.post(buf, "lorem.txt", content_type="text/plain")
+
+    assert rv == dict(id=pk)
+
 
 def test_post_timed_out(files_resource, requests_mock, url, text):
     buf = BytesIO(text.encode())
