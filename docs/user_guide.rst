@@ -1,7 +1,7 @@
 User Guide
 ==========
 
-Official python SDK for `Parble <https://parble.com/home>`_ intelligent document processing API.
+Official python SDK for `Parble <https://parble.com/>`_ intelligent document processing API.
 
 To access the API you will need a Parble account. Sign up for free at `signup <https://parble.com/signup>`_.
 
@@ -22,8 +22,8 @@ Configuration
 
 The SDK requires 2 settings to connect and authenticate to the Parble API:
 
-- The URL of your specific tenant, you can find it on your portal
-- API-Key to use, generated via the portal
+- The URL of your specific tenant, you can find it on your dashboard
+- API-Key to use, generated via the dashboard
 
 You can either explicitly pass it to the SDK :
 
