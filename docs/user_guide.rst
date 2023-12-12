@@ -72,6 +72,7 @@ Here you can also optionally specify the content type of your file - this gives 
     with open("files/demo.pdf", "rb") as f:
         file = sdk.files.post_file(f, "demo.pdf", "application/pdf", inbox_id="<your_inbox_id>")
 
+    # Print the returned file id
     print(file.id)
 
 
@@ -85,11 +86,14 @@ You need to define the URL and the API-Key as environment variables beforehand:
 
 .. code-block:: console
 
+    # Set the environment variables
     export PARBLE_URL="https://api.parble.com/v1/<tenant id>"
     export PARBLE_API_KEY="xxx"
+
+    # Upload a file named Invoice.pdf in this folder
     parble file upload Invoice.pdf
 
-    # Also here you can optionally specify the inbox id
+    # Optionally specify the inbox id during upload
     parble file upload Invoice.pdf --inbox-id <your_inbox_id>
 
 
