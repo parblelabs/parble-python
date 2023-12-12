@@ -58,6 +58,7 @@ Here you can also optionally specify the content type of your file - this gives 
 
     sdk = ParbleSDK()  # Loading settings from envvars
 
+
     # The easiest way is to directly upload from a file path, without additional options
     file = sdk.files.post("files/demo.pdf")
 
@@ -65,12 +66,13 @@ Here you can also optionally specify the content type of your file - this gives 
     with open("files/demo.pdf", "rb") as f:
         file = sdk.files.post_file(f, "demo.pdf", "application/pdf")
 
-    # If you want to send the file to a specific inbox, you can also choose to pass an inbox id explicitly during upload
+    # If you want to send the file to a specific inbox, you can pass the inbox id during upload
     file = sdk.files.post("files/demo.pdf", inbox_id="<your_inbox_id>")
 
     # Or with a file-like object
     with open("files/demo.pdf", "rb") as f:
         file = sdk.files.post_file(f, "demo.pdf", "application/pdf", inbox_id="<your_inbox_id>")
+
 
     # Print the returned file id
     print(file.id)
