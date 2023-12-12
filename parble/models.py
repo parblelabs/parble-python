@@ -19,10 +19,7 @@ class Timings(BaseModel):
     done: Optional[datetime]
 
     def to_json_struct(self):
-        return {
-            "upload": self.upload.strftime('%Y-%m-%d %H:%M:%S'),
-            "done": self.done.strftime('%Y-%m-%d %H:%M:%S')
-        }
+        return {"upload": self.upload.strftime("%Y-%m-%d %H:%M:%S"), "done": self.done.strftime("%Y-%m-%d %H:%M:%S")}
 
 
 class Classification(BaseModel):
@@ -127,7 +124,7 @@ class File(BaseModel):
         decoding a json string to a File object
         """
         attrs = json.loads(json_data)
-        attrs["sdk"] = 'ParbleSDK'
+        attrs["sdk"] = "ParbleSDK"
         return File.parse_obj(attrs)
 
     def to_json(self):
@@ -138,6 +135,6 @@ class File(BaseModel):
 
     @staticmethod
     def __convert_to_json_struct(o):
-        if hasattr(o, 'to_json_struct') and callable(o.to_json_struct):
+        if hasattr(o, "to_json_struct") and callable(o.to_json_struct):
             return o.to_json_struct()
         return o.__dict__

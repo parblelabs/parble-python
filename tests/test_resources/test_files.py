@@ -49,6 +49,7 @@ def test_post(files_resource, requests_mock, url, text):
 
     assert rv == dict(id=pk)
 
+
 def test_post_custom_inbox(files_resource, requests_mock, url, text):
     pk = "636baf52b9753d4ce1e210d0"
     inbox_id = "636baf52b9753d4ce1e210d0"

@@ -40,8 +40,9 @@ def command_foo():
 @pytest.fixture()
 def mock_files_post(dummy_file_attributes):
     def files_post(self: ParbleSDK.Files, _, inbox_id):
-        """ This mocks the post method of the Files class on the ParbleSDK"""
+        """This mocks the post method of the Files class on the ParbleSDK"""
         return self.create(**dummy_file_attributes)
+
     return files_post
 
 
@@ -69,6 +70,7 @@ def test_upload(runner, tmp_path, config_envvars, text, mock_files_post, dummy_f
         assert "documents" in data
         docs = data["documents"]
         assert len(docs) == 1
+
 
 def test_upload_custom_inbox(runner, tmp_path, config_envvars, text, mock_files_post, dummy_file_attributes):
     name = "test_upload.txt"

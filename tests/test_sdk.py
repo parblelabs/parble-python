@@ -44,6 +44,7 @@ def test_upload_file_override_content_type(sdk, text, dummy_file_attributes):
         assert rv.id == dummy_file_attributes["id"]
         m.assert_called_once_with(buf, "foo.txt", content_type="text/plain", inbox_id=None)
 
+
 def test_upload_file_custom_inbox(sdk, tmp_path, text, dummy_file_attributes):
     name = "test_upload.txt"
     path = tmp_path / name

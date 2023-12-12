@@ -26,10 +26,11 @@ class ParbleSDK:
         """
         Files helper to upload, get processed elements, etc
         """
-        def __init__(self, sdk: 'ParbleSDK'):
+
+        def __init__(self, sdk: "ParbleSDK"):
             self._sdk = sdk
 
-        def post(self, path: t.Union[str, Path], inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None) -> File:
+        def post(self, path: t.Union[str, Path], inbox_id: constr(regex=r"^[a-f0-9]{24}$") = None) -> File:
             """
             Upload and process the file at the given local path
 
@@ -51,7 +52,13 @@ class ParbleSDK:
                 res = self._sdk.client.files.post(f, file_name, inbox_id=inbox_id, content_type=file_type)
             return self.create(**res)
 
-        def post_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream", inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None,) -> File:
+        def post_file(
+            self,
+            file: t.BinaryIO,
+            file_name: str,
+            file_type="application/octet-stream",
+            inbox_id: constr(regex=r"^[a-f0-9]{24}$") = None,
+        ) -> File:
             """
             Upload and process the given file-like
 

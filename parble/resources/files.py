@@ -27,13 +27,11 @@ class FilesResource(BaseResource):
         self,
         file_content: t.BinaryIO,
         file_name: str,
-        inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None,
+        inbox_id: constr(regex=r"^[a-f0-9]{24}$") = None,
         content_type: str = "application/octet-stream",
     ) -> t.Dict[str, t.Any]:
 
-        files = {
-            "file": (file_name, file_content, content_type)
-        }
+        files = {"file": (file_name, file_content, content_type)}
         if inbox_id:
             files["inbox_id"] = inbox_id
 
