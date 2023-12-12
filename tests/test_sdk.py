@@ -22,7 +22,7 @@ def test_upload_path(sdk, tmp_path, text, dummy_file_attributes):
         rv = sdk.files.post(str(path))
         assert isinstance(rv, File)
         assert rv.id == dummy_file_attributes["id"]
-        m.assert_called_once_with(ANY, name, content_type="text/plain")
+        m.assert_called_once_with(ANY, name, content_type="text/plain", inbox_id=None)
         f = m.call_args[0][0]
         assert f.name == str(path)
 
@@ -31,9 +31,9 @@ def test_upload_file_default_content_type(sdk, text, dummy_file_attributes):
     buf = BytesIO(text.encode())
     with patch("parble.resources.files.FilesResource.post") as m:
         m.return_value = dummy_file_attributes
-        rv = sdk.files.post_file(buf, "foo.txt")
+        rv = sdk.files.post_file(buf, "foo.txt", inbox_id=None)
         assert rv.id == dummy_file_attributes["id"]
-        m.assert_called_once_with(buf, "foo.txt", content_type="application/octet-stream")
+        m.assert_called_once_with(buf, "foo.txt", content_type="application/octet-stream", inbox_id=None)
 
 
 def test_upload_file_override_content_type(sdk, text, dummy_file_attributes):
@@ -42,7 +42,22 @@ def test_upload_file_override_content_type(sdk, text, dummy_file_attributes):
         m.return_value = dummy_file_attributes
         rv = sdk.files.post_file(buf, "foo.txt", "text/plain")
         assert rv.id == dummy_file_attributes["id"]
-        m.assert_called_once_with(buf, "foo.txt", content_type="text/plain")
+        m.assert_called_once_with(buf, "foo.txt", content_type="text/plain", inbox_id=None)
+
+def test_upload_file_custom_inbox(sdk, tmp_path, text, dummy_file_attributes):
+    name = "test_upload.txt"
+    path = tmp_path / name
+    with open(path, "w") as f:
+        f.write(text)
+
+    with patch("parble.resources.files.FilesResource.post") as m:
+        m.return_value = dummy_file_attributes
+        rv = sdk.files.post(str(path), inbox_id="636baf52b9753d4ce1e210d0")
+        assert isinstance(rv, File)
+        assert rv.id == dummy_file_attributes["id"]
+        m.assert_called_once_with(ANY, name, inbox_id="636baf52b9753d4ce1e210d0", content_type="text/plain")
+        f = m.call_args[0][0]
+        assert f.name == str(path)
 
 
 def test_get_file(sdk, dummy_file_attributes):

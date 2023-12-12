@@ -6,6 +6,7 @@ from unittest.mock import ANY, PropertyMock, patch
 import click
 import pytest
 from click.testing import CliRunner
+from parble import ParbleSDK
 
 from parble.commands import NAME, get, parble, upload
 
@@ -36,20 +37,54 @@ def command_foo():
     parble.commands.pop("foo")
 
 
-def test_upload(runner, tmp_path, config_envvars, text, dummy_file_attributes):
+@pytest.fixture()
+def mock_files_post(dummy_file_attributes):
+    def files_post(self: ParbleSDK.Files, _, inbox_id):
+        """ This mocks the post method of the Files class on the ParbleSDK"""
+        return self.create(**dummy_file_attributes)
+    return files_post
+
+
+def test_upload(runner, tmp_path, config_envvars, text, mock_files_post, dummy_file_attributes):
     name = "test_upload.txt"
     path = tmp_path / name
 
-    def upload_path(self, _):
-        return self.create(**dummy_file_attributes)
-
+    # Writing the test file into a temp path
     with open(path, "w") as f:
         f.write(text)
+
     with patch("parble.sdk.ParbleSDK.Files.post", autospec=True) as m:
-        m.side_effect = upload_path
+        m.side_effect = mock_files_post
+        # We invoke the runner with the temp path of the test file
         res = runner.invoke(upload, [str(path)])
         assert res.exit_code == 0, res.output
-        m.assert_called_once_with(ANY, path)
+        # We verify the (mocked) Files post method was called with this path and empty inbox
+        m.assert_called_once_with(ANY, path, inbox_id=None)
+        data = json.loads(res.output)
+        assert data["id"] == dummy_file_attributes["id"]
+        assert data["filename"] == dummy_file_attributes["filename"]
+        assert data["automated"] == dummy_file_attributes["automated"]
+        assert data["number_of_pages"] == dummy_file_attributes["number_of_pages"]
+        assert "timings" in data
+        assert "documents" in data
+        docs = data["documents"]
+        assert len(docs) == 1
+
+def test_upload_custom_inbox(runner, tmp_path, config_envvars, text, mock_files_post, dummy_file_attributes):
+    name = "test_upload.txt"
+    path = tmp_path / name
+
+    # Writing the test file into a temp path
+    with open(path, "w") as f:
+        f.write(text)
+
+    with patch("parble.sdk.ParbleSDK.Files.post", autospec=True) as m:
+        m.side_effect = mock_files_post
+        # We invoke the runner with the temp path of the test file
+        res = runner.invoke(upload, [str(path), "-i636baf52b9753d4ce1e210d0"])
+        assert res.exit_code == 0, res.output
+        # We verify the (mocked) Files post method was called with this path and inbox
+        m.assert_called_once_with(ANY, path, inbox_id="636baf52b9753d4ce1e210d0")
         data = json.loads(res.output)
         assert data["id"] == dummy_file_attributes["id"]
         assert data["filename"] == dummy_file_attributes["filename"]

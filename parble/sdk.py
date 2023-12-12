@@ -3,6 +3,8 @@ from io import BytesIO
 from mimetypes import guess_type
 from pathlib import Path
 
+from pydantic import constr
+
 from .client import ParbleAPIClient
 from .models import File
 
@@ -27,12 +29,13 @@ class ParbleSDK:
         def __init__(self, sdk: 'ParbleSDK'):
             self._sdk = sdk
 
-        def post(self, path: t.Union[str, Path]) -> File:
+        def post(self, path: t.Union[str, Path], inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None) -> File:
             """
             Upload and process the file at the given local path
 
             Args:
                 path: local path of the file to upload
+                inbox_id: optional uuid of the inbox to upload to
 
             Returns:
                 Processed File response
@@ -45,10 +48,10 @@ class ParbleSDK:
             if not file_type:
                 file_type = "application/octet-stream"
             with open(path.absolute(), "rb") as f:
-                res = self._sdk.client.files.post(f, file_name, content_type=file_type)
+                res = self._sdk.client.files.post(f, file_name, inbox_id=inbox_id, content_type=file_type)
             return self.create(**res)
 
-        def post_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream") -> File:
+        def post_file(self, file: t.BinaryIO, file_name: str, file_type="application/octet-stream", inbox_id: constr(regex=r'^[a-f0-9]{24}$') = None,) -> File:
             """
             Upload and process the given file-like
 
@@ -59,12 +62,13 @@ class ParbleSDK:
             Args:
                 file: File-like object
                 file_name: Filename to be used
+                inbox_id: optional uuid of the inbox to upload to
                 file_type: Content Type of the file
 
             Returns:
                 Processed File data
             """
-            res = self._sdk.client.files.post(file, file_name, content_type=file_type)
+            res = self._sdk.client.files.post(file, file_name, inbox_id=inbox_id, content_type=file_type)
             return self.create(**res)
 
         def get(self, file_id: str) -> File:

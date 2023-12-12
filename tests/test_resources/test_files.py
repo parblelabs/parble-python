@@ -56,7 +56,7 @@ def test_post_custom_inbox(files_resource, requests_mock, url, text):
 
     requests_mock.post(f"{url}files", json=dict(id=pk))
 
-    rv = files_resource.post(buf, "lorem.txt", inbox_id, content_type="text/plain")
+    rv = files_resource.post(buf, "lorem.txt", inbox_id=inbox_id, content_type="text/plain")
 
     assert rv == dict(id=pk)
 

@@ -131,7 +131,13 @@ def file():
     type=click.Path(dir_okay=False, path_type=Path),
     help="Save the output to this file",
 )
-def upload(file: Path, output: Path, output_format: str):
+@click.option(
+    "-i",
+    "--inbox",
+    type=str,
+    help="Optional inbox id to upload to",
+)
+def upload(file: Path, output: Path, output_format: str, inbox: str):
     """
     Upload and process FILE.
 
@@ -143,7 +149,7 @@ def upload(file: Path, output: Path, output_format: str):
     """
     sdk = ParbleSDK()
     with Spinner():
-        file = sdk.files.post(file)
+        file = sdk.files.post(file, inbox_id=inbox)
 
     _output(file, output_format, output)
 
