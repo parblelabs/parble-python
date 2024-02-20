@@ -32,12 +32,14 @@ class FilesResource(BaseResource):
     ) -> t.Dict[str, t.Any]:
 
         files = {"file": (file_name, file_content, content_type)}
+        payload = {}
         if inbox_id:
-            files["inbox_id"] = inbox_id
+            payload["inbox_id"] = inbox_id
 
         res = self._client.post(
             self.__uri__,
             files=files,
+            data=payload,
             timeout=300,
         )
         if res.ok:
