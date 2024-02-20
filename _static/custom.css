@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+@import url('https://fonts.googleapis.com/css?family=Palanquin');
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+
+html[data-theme=light] {
+    --pst-color-primary: #026670;
+    --pst-color-secondary: #FCE181;
+    --pst-color-target: #FEF9C7;
+}
+
+html[data-theme=dark] {
+    --pst-color-primary: #026670;
+    --pst-color-secondary: #FCE181;
+    --pst-color-target: #FEF9C7;
+}
+
+html {
+    --pst-font-family-base: Lato, var(--pst-font-family-base-system);
+    --pst-font-family-heading: Palanquin, Georgia, Times, var(--pst-font-family-base-system);
+    --pst-font-family-monospace: Roboto Mono, var(--pst-font-family-monospace-system);
+}
